@@ -4,6 +4,7 @@
 #'python3 dfs_000.py AUDIO` to extract AUDIO.DFS and AUDIO.000 into the 'extracted' folder.
 
 import sys
+import os
 chosen_file = sys.argv[1]
 
 
@@ -105,10 +106,21 @@ for i in range(folder_count):
         filename = name_part_3 + name_part_1 + name_part_2 + name_part_4
         print(filename)
         extracted_bytes = archive_bytes[file_offset:file_offset + file_len]
+
+        #replace dumb windows double-backslashes
+        filename = filename.replace('\\','/')
+        #Detect if the given filename includes folders
+        file_path = filename.split("/")
+        for dir_num in range(len(file_path[:-1])):
+            print("Directory needed")
+            path_to_dir = 'extracted/' + "/".join(file_path[:dir_num+1])
+            print(path_to_dir)
+            if not os.path.exists(path_to_dir):
+                print("Making")
+                os.mkdir(path_to_dir)
+        
         with open('extracted/' + filename,'wb') as writer_file:
             writer_file.write(extracted_bytes)
-##        print(f"{file_offset = }")
-##        print(f"{file_len = }")
         
 print("Script complete. Final value of indexer:")
 print(file_pointer)
